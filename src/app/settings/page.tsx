@@ -12,6 +12,7 @@ export default async function SettingsPage() {
       <PageHeader
         eyebrow="관리"
         title="설정"
+        help="settings"
         desc={
           <>
             제안서 4-4는 적용 AI를 &ldquo;젬마4 또는 외부 상용 AI — 보안 요건 확인 후 착수 시 확정&rdquo;으로 밝혔습니다.

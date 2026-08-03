@@ -26,6 +26,7 @@ export default async function DraftDetail({ params }: { params: Promise<{ id: st
       <PageHeader
         eyebrow={`초안 · ${draft.announcementTitle}`}
         title={draft.title}
+        help="drafts"
         desc={
           <>
             표준 절차 7단계 중 <strong className="text-ink-700">{done}단계</strong> 작성 완료 · 누적 AI 처리 시간{' '}

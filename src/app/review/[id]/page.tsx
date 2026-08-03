@@ -36,6 +36,7 @@ export default async function ReviewDetail({ params }: { params: Promise<{ id: s
       <PageHeader
         eyebrow="검토·감사 대응"
         title={draft.title}
+        help="review"
         desc={
           <>
             {draft.announcementTitle} · {AI_MODE_LABELS[settings.aiMode]}

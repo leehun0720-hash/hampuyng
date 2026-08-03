@@ -13,6 +13,7 @@ export default async function ReviewIndex() {
       <PageHeader
         eyebrow="제안서 작성 · 3단계"
         title="검토·감사 대응"
+        help="review"
         desc={
           <>
             검토 확인목록을 통과하지 않으면 제출을 확정할 수 없습니다 (제안서 5-2 ㉰). 자동 판정 항목은 시스템이 직접

@@ -14,6 +14,7 @@ export default async function AnnouncementsPage() {
       <PageHeader
         eyebrow="제안서 작성 · 1단계"
         title="공고문 분석"
+        help="announcements"
         desc={
           <>
             공고문을 넣으면 평가항목이 표로 정리되고, 항목마다 함평군의 대응 근거가 자료 창고에서 자동으로 붙습니다

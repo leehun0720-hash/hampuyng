@@ -18,6 +18,7 @@ export default async function PromptsPage({ searchParams }: { searchParams: Prom
       <PageHeader
         eyebrow="기반 · 검수 대상 결과물 ③"
         title="AI 활용 지시문 30종"
+        help="prompts"
         desc={
           <>
             복사해 붙이면 되는 작업 지시 문장입니다. 모든 지시문은 자료 창고 한정 원칙을 전제로 작성되었으며, 실행 시

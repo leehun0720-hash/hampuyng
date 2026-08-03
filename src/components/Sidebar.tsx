@@ -19,6 +19,7 @@ const NAV = [
     items: [
       { href: '/documents', label: '자료 창고', desc: 'AI 근거의 유일한 출처' },
       { href: '/prompts', label: 'AI 지시문 30종', desc: '복사해 쓰는 작업 지시' },
+      { href: '/manual', label: '업무 매뉴얼', desc: '화면별 사용 방법' },
     ],
   },
   {
@@ -42,11 +43,58 @@ const MODE_SHORT: Record<AiMode, string> = {
   local: '로컬 설치형',
 }
 
+/**
+ * 좁은 화면용 상단 메뉴.
+ * 사이드바를 그대로 두면 폭 240px를 차지해 본문이 눌린다. lg 미만에서는 이걸로 대체한다.
+ */
+export function MobileNav({ aiMode, docCount }: { aiMode: AiMode; docCount: number }) {
+  const pathname = usePathname()
+  const items = NAV.flatMap((s) => s.items)
+
+  return (
+    <div className="sticky top-0 z-30 border-b border-ink-200 bg-white lg:hidden">
+      <div className="flex items-center justify-between gap-3 px-4 pt-3">
+        <div className="min-w-0">
+          <p className="text-[10px] font-semibold tracking-wide text-gov-500">전라남도 함평군</p>
+          <p className="truncate text-[13px] font-bold text-ink-900">국비 공모 제안서 작성 지원 시스템</p>
+        </div>
+        <Link
+          href="/settings"
+          className={`shrink-0 rounded border px-2 py-1 text-[10px] font-semibold ${MODE_TONE[aiMode]}`}
+        >
+          {MODE_SHORT[aiMode]}
+        </Link>
+      </div>
+      <nav className="flex gap-1 overflow-x-auto px-4 py-2.5">
+        {items.map((item) => {
+          const active = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href)
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`shrink-0 rounded px-2.5 py-1.5 text-[12px] font-semibold transition ${
+                active ? 'bg-gov-600 text-white' : 'bg-ink-100 text-ink-700'
+              }`}
+            >
+              {item.label}
+              {item.href === '/documents' && (
+                <span className={`ml-1 font-mono text-[10px] ${active ? 'text-gov-100' : 'text-ink-400'}`}>
+                  {docCount}
+                </span>
+              )}
+            </Link>
+          )
+        })}
+      </nav>
+    </div>
+  )
+}
+
 export function Sidebar({ aiMode, docCount }: { aiMode: AiMode; docCount: number }) {
   const pathname = usePathname()
 
   return (
-    <aside className="flex w-60 shrink-0 flex-col border-r border-ink-200 bg-white">
+    <aside className="hidden w-60 shrink-0 flex-col border-r border-ink-200 bg-white lg:flex">
       <div className="border-b border-ink-200 px-5 py-4">
         <p className="text-[11px] font-semibold tracking-wide text-gov-500">전라남도 함평군</p>
         <p className="mt-0.5 text-[15px] font-bold leading-snug text-ink-900">

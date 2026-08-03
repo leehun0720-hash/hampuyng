@@ -63,22 +63,50 @@ export function Card({
   )
 }
 
+/**
+ * 도움말 링크 — 업무 매뉴얼의 해당 항목으로 이동한다.
+ * 화면마다 "이 화면을 어떻게 쓰는가"를 찾아 헤매지 않도록 헤더에 고정으로 둔다.
+ */
+export function HelpLink({ anchor, label = '도움말' }: { anchor: string; label?: string }) {
+  return (
+    <Link
+      href={`/manual#${anchor}`}
+      title="이 화면의 사용 방법을 업무 매뉴얼에서 봅니다"
+      className="inline-flex items-center gap-1 rounded border border-ink-300 bg-white px-2 py-1 text-[11px] font-semibold text-ink-600 transition hover:border-gov-300 hover:bg-gov-50 hover:text-gov-700"
+    >
+      <span
+        aria-hidden
+        className="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-current text-[9px] leading-none"
+      >
+        ?
+      </span>
+      {label}
+    </Link>
+  )
+}
+
 export function PageHeader({
   eyebrow,
   title,
   desc,
   action,
+  help,
 }: {
   eyebrow?: string
   title: string
   desc?: ReactNode
   action?: ReactNode
+  /** 업무 매뉴얼 항목 id — 지정하면 제목 옆에 도움말 단추가 붙는다 */
+  help?: string
 }) {
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-ink-200 pb-5">
       <div className="min-w-0">
         {eyebrow && <p className="mb-1 text-[11px] font-semibold tracking-wide text-gov-500">{eyebrow}</p>}
-        <h1 className="text-xl font-bold tracking-tight text-ink-900">{title}</h1>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <h1 className="text-xl font-bold tracking-tight text-ink-900">{title}</h1>
+          {help && <HelpLink anchor={help} />}
+        </div>
         {desc && <div className="mt-2 max-w-3xl text-[13px] leading-relaxed text-ink-500">{desc}</div>}
       </div>
       {action && <div className="shrink-0">{action}</div>}

@@ -14,6 +14,7 @@ export default async function DraftsPage() {
       <PageHeader
         eyebrow="제안서 작성 · 2단계"
         title="초안 작성"
+        help="drafts"
         desc={
           <>
             표준 절차 7단계에 따라 작성합니다. 각 단계는 자료 창고 검색 결과만을 근거로 생성되며, 생성된 문장에는 출처

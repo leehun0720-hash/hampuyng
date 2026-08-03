@@ -52,6 +52,7 @@ export default async function MetricsPage() {
       <PageHeader
         eyebrow="관리"
         title="성과 측정 · 투자 회수"
+        help="metrics"
         desc={
           <>
             제안서 7-1은 정량 효과의 전제값을 모두 &ldquo;확정 시점&rdquo;과 함께 밝혔습니다. 이 화면도 같은 원칙을

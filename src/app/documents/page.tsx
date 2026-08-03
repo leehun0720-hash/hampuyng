@@ -30,6 +30,7 @@ export default async function DocumentsPage({
       <PageHeader
         eyebrow="기반 · 검수 대상 결과물 ②"
         title="함평군 자료 창고"
+        help="documents"
         desc={
           <>
             AI는 <strong className="text-ink-700">이 창고 안에서만</strong> 근거를 찾습니다 (제안서 5-2 ㉮). 창고에 없는

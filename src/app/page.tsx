@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { MANUAL } from './manual/manual-data'
 import { Badge, Card, LinkButton, Notice, PageHeader, Progress } from '@/components/ui'
 import { RadarChart } from '@/components/RadarChart'
 import { read } from '@/lib/db'
@@ -37,9 +38,9 @@ export default async function Dashboard() {
   const deliverables = [
     {
       label: '① 제안서 작성 표준 업무 매뉴얼',
-      current: '표준 절차 7단계 · 지시문 연결 완료',
+      current: `화면별 사용 방법 ${MANUAL.length}개 항목 · 표준 절차 7단계 수록`,
       done: true,
-      href: '/prompts',
+      href: '/manual',
     },
     {
       label: '② 함평군 자료 창고 (200건 이상)',
@@ -75,6 +76,7 @@ export default async function Dashboard() {
       <PageHeader
         eyebrow="함평군 행정 AI 전환(AX) 1단계"
         title="국비 공모 제안서 작성 지원 시스템"
+        help="dashboard"
         desc={
           <>
             국비 공모 제안서를 외주에서 사 오는 대신 군이 직접 만드는 체계입니다. 현재 AI 모드는{' '}

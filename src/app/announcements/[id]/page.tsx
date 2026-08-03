@@ -27,6 +27,7 @@ export default async function AnnouncementDetail({ params }: { params: Promise<{
       <PageHeader
         eyebrow={`공고문 분석 결과 · ${a.ministry}`}
         title={a.title}
+        help="announcements"
         desc={
           <>
             마감 {a.deadline} · {a.budgetNote}
