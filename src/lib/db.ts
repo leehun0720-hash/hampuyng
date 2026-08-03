@@ -88,25 +88,70 @@ function enqueue<T>(name: string, task: () => Promise<T>): Promise<T> {
   return next
 }
 
+/**
+ * 읽기 전용 환경 대비 — 메모리 폴백.
+ *
+ * 이 시스템은 군청 내부망 단독 서버 배포를 전제로 data/ 디렉터리에 직접 기록한다.
+ * 그러나 서버리스 호스팅(Netlify Functions, Vercel 등)은 파일시스템이 읽기 전용이라
+ * 첫 쓰기에서 EROFS/EACCES로 실패한다. 그대로 두면 모든 화면이 500으로 죽는다.
+ *
+ * 그래서 쓰기가 불가능하다고 판단되면 메모리 저장으로 전환한다.
+ * 단, 메모리 저장은 서버 인스턴스가 살아 있는 동안만 유지되므로 영구 저장이 아니다.
+ * 사용자가 입력한 자료가 사라질 수 있다는 사실을 화면에 반드시 표시해야 한다(isEphemeral).
+ */
+const memory = new Map<string, unknown>()
+let ephemeral = process.env.HAMPYUNG_EPHEMERAL === '1'
+
+/** 저장이 휘발성인지 — 화면 경고 배너 표시에 쓴다. */
+export function isEphemeral(): boolean {
+  return ephemeral
+}
+
+function isReadOnlyError(e: unknown): boolean {
+  const code = (e as NodeJS.ErrnoException)?.code
+  return code === 'EROFS' || code === 'EACCES' || code === 'EPERM'
+}
+
 async function readRaw<K extends keyof Collections>(name: K): Promise<Collections[K]> {
-  await ensureDir()
+  if (ephemeral) {
+    if (!memory.has(name)) memory.set(name, SEEDS[name]())
+    return memory.get(name) as Collections[K]
+  }
+
   try {
+    await ensureDir()
     const raw = await fs.readFile(filePath(name), 'utf-8')
     return JSON.parse(raw) as Collections[K]
-  } catch {
+  } catch (e) {
+    if (isReadOnlyError(e)) ephemeral = true
     const seeded = SEEDS[name]() as Collections[K]
     await writeRaw(name, seeded)
-    return seeded
+    return ephemeral ? (memory.get(name) as Collections[K]) : seeded
   }
 }
 
-/** 임시 파일에 기록한 뒤 rename 하여 중간에 끊겨도 파일이 깨지지 않게 한다. */
+/**
+ * 임시 파일에 기록한 뒤 rename 하여 중간에 끊겨도 파일이 깨지지 않게 한다.
+ * 파일시스템이 읽기 전용이면 메모리 저장으로 전환한다.
+ */
 async function writeRaw<K extends keyof Collections>(name: K, value: Collections[K]): Promise<void> {
-  await ensureDir()
+  if (ephemeral) {
+    memory.set(name, value)
+    return
+  }
+
   const file = filePath(name)
   const tmp = `${file}.${process.pid}.${++tmpCounter}.tmp`
-  await fs.writeFile(tmp, JSON.stringify(value, null, 2), 'utf-8')
-  await fs.rename(tmp, file)
+  try {
+    await ensureDir()
+    await fs.writeFile(tmp, JSON.stringify(value, null, 2), 'utf-8')
+    await fs.rename(tmp, file)
+  } catch (e) {
+    if (!isReadOnlyError(e)) throw e
+    // 읽기 전용 호스팅 — 이후 모든 저장을 메모리로 돌린다
+    ephemeral = true
+    memory.set(name, value)
+  }
 }
 
 let tmpCounter = 0
